@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenTok Resize and Relocate Sample</title>
+    <link href="css/app.css" rel="stylesheet" type="text/css" />
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div id="nav-container"></div>
+    <div id="stage-container">
+      <div id="pub-video" class="has-audio has-video"></div>
+      <div id="sub-video" class="has-audio has-video"></div>
+    </div>
+
+    <div id="ot-buttons">
+      <button onclick="initSession()">Initialize Session</button>
+      <button onclick="publish()">Publish</button>
+      <button onclick="publishDestroy()">Publish Destroy</button>
+      <button onclick="sessionDisconnect()">Session Disconnect</button>
+    </div>
+
+    <div id="css-buttons">
+      <button onclick="moveVideosToNav()">Move to Nav</button>
+      <button onclick="moveVideosToStage()">Move to Stage</button>
+      <button onclick="resizePublisherSmall()">Resize Pub Small</button>
+      <button onclick="resizePublisherLarge()">Resize Pub Large</button>
+      <button onclick="resizeSubscriberSmall()">Resize Sub Small</button>
+      <button onclick="resizeSubscriberLarge()">Resize Sub Large</button>
+      <button onclick="removeHasVideo()">Remove has-video</button>
+    </div>
+
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>

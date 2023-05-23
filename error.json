@@ -1,0 +1,63 @@
+
+
+Handle the error OpenTok:Events:error An error occurred in an event handler +0ms TypeError: subscriber.videoElement.on is not a function
+
+This updated code first checks if subscriber and subscriber.videoElement exist. Then, it verifies if the on function is available on the subscriber.videoElement before attaching the event listener. If the on function is not available, it logs an error message indicating that the event listener cannot be attached.
+
+By performing these checks, you can prevent the TypeError and handle the error condition appropriately in your code.
+
+
+
+XMLHttpRequest cannot load https://hlg.tokbox.com/prod/logging/ClientEvent due to access control checks.
+
+The error message "XMLHttpRequest cannot load https://hlg.tokbox.com/prod/logging/ClientEvent due to access control checks" indicates a Cross-Origin Resource Sharing (CORS) issue. This error occurs when your web application tries to make a request to a different domain (in this case, `hlg.tokbox.com`) that doesn't allow cross-origin requests from your domain.
+
+To resolve this issue, you have a few options:
+
+1. Check if the OpenTok library or SDK you are using has any specific configuration options related to CORS. Review the documentation or resources provided by OpenTok to see if there are any settings you can adjust to handle CORS restrictions.
+
+2. If you have control over the server-side code running on `hlg.tokbox.com`, you can configure the server to allow cross-origin requests from your domain by including the appropriate CORS headers in the server's response. You would need to enable CORS and set the appropriate headers, such as `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, and `Access-Control-Allow-Headers`. The specific configuration depends on the server-side technology you are using.
+
+3. If you don't have control over the server-side code on `hlg.tokbox.com`, you may need to contact the provider (TokBox) for support and inquire about any options or workarounds they recommend for handling CORS issues.
+
+It's important to note that handling CORS restrictions involves both client-side and server-side configurations. If none of the above options are feasible or effective, you may need to consider alternative solutions or workarounds provided by the OpenTok platform or consult the TokBox support for further assistance.
+
+
+
+OpenTok:NativeVideoElementWrapper:1:warn Video element paused, auto-resuming. If you intended to do this, use publishVideo(false) or subscribeToVideo(false) instead. +0ms
+
+
+To handle the warning "OpenTok:NativeVideoElementWrapper:1:warn Video element paused, auto-resuming. If you intended to do this, use publishVideo(false) or subscribeToVideo(false) instead." in OpenTok, you can take the following steps:
+
+Check if you have explicitly paused the video element using publishVideo(false) or subscribeToVideo(false) methods. If you have intentionally paused the video, you can ignore the warning.
+
+If you have not intentionally paused the video and you receive this warning, you can handle it by logging the warning message or performing any necessary actions. Here's an example:
+
+javascript
+Copy code
+subscriber.on('videoElementPauseWarning', (event) => {
+  console.warn('Video element pause warning:', event);
+  // Perform any necessary actions or error handling
+});
+By listening to the videoElementPauseWarning event on the subscriber object, you can capture the warning and log it for debugging purposes or take appropriate actions based on your application's requirements.
+
+Remember to replace subscriber with your actual OpenTok subscriber object.
+
+When you receive the videoElementPauseWarning event in OpenTok, it indicates that the video element associated with the subscriber has been automatically resumed after being paused. If you want to handle this event, you can consider the following options:
+
+Log the warning message: You can simply log the warning message for debugging or monitoring purposes. This helps you keep track of when and why the video element was automatically resumed.
+javascript
+Copy code
+subscriber.on('videoElementPauseWarning', (event) => {
+  console.warn('Video element pause warning:', event);
+});
+Implement custom logic: If you want to take specific actions when the video element is auto-resumed, you can add your own code inside the event handler. For example, you might want to display a notification to the user or perform additional checks.
+javascript
+Copy code
+subscriber.on('videoElementPauseWarning', (event) => {
+  console.warn('Video element pause warning:', event);
+  // Add your custom logic here
+  // Display a notification to the user
+  // Perform additional checks or actions
+});
+By customizing the event handler, you can respond to the videoElementPauseWarning event according to your application's needs.
