@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vonage Video API Web App</title>
+    <style>
+      #publisher {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #000;
+      }
+
+      #subscribers {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .subscriber-container {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #000;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vonage Video API Web App</h1>
+    <div id="publisher"></div>
+    <div id="subscribers"></div>
+
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script>
+      // Replace with your Vonage Video API key, session ID, and token
+      const apiKey = "YOUR_API_KEY";
+      const sessionId = "YOUR_SESSION_ID";
+      const token = "YOUR_TOKEN";
+
+      // Initialize a session object
+      const session = OT.initSession(apiKey, sessionId);
+
+      // Create a publisher object
+      let publisher;
+
+      // Event handlers for the session
+      session.on({
+        sessionConnected: function (event) {
+          console.log("Session connected");
+        },
+        sessionDisconnected: function (event) {
+          console.log("Session disconnected");
+        },
+        streamCreated: function (event) {
+          console.log("Session stream created");
+          const subscriberContainer = document.createElement("div");
+          subscriberContainer.className = "subscriber-container";
+          const subscriberId = `subscriber-${event.stream.streamId}`;
+          subscriberContainer.id = subscriberId;
+          document
+            .getElementById("subscribers")
+            .appendChild(subscriberContainer);
+          session.subscribe(
+            event.stream,
+            subscriberId,
+            {
+              insertMode: "append",
+              width: "100%",
+              height: "100%",
+            },
+            function (error) {
+              if (error) {
+                console.error("Error subscribing:", error);
+              } else {
+                const subscriber = session.getSubscribersForStream(
+                  event.stream
+                )[0];
+                attachSubscriberEventListeners(subscriber, subscriberId);
+              }
+            }
+          );
+
+          const stream = event.stream;
+          if (stream.name === "Vonage Video API Recording") {
+            console.log("Recording started");
+            // Handle recording start
+          }
+        },
+        streamDestroyed: function (event) {
+          console.log("Session stream destroyed");
+          const subscriberId = `subscriber-${event.stream.streamId}`;
+          const subscriberContainer = document.getElementById(subscriberId);
+          if (subscriberContainer) {
+            subscriberContainer.parentNode.removeChild(subscriberContainer);
+          }
+        },
+        connectionCreated: function (event) {
+          console.log("Session connection created");
+        },
+        connectionDestroyed: function (event) {
+          console.log("Session connection destroyed");
+        },
+        signal: function (event) {
+          console.log("Session signal received");
+        },
+        archiveStarted: function (event) {
+          console.log("Session archive started");
+        },
+        archiveStopped: function (event) {
+          console.log("Session archive stopped");
+        },
+        sessionReconnecting: function (event) {
+          console.log("Session reconnecting");
+        },
+        sessionReconnected: function (event) {
+          console.log("Session reconnected");
+        },
+      });
+
+      // Connect to the session
+      session.connect(token, function (error) {
+        if (error) {
+          console.error("Error connecting to the session", error);
+        } else {
+          console.log("Connected to the session");
+          // Create a publisher if it doesn't exist
+          if (!publisher) {
+            publisher = OT.initPublisher("publisher", function (error) {
+              if (error) {
+                console.error("Error initializing publisher:", error);
+              } else {
+                session.publish(publisher, function (error) {
+                  if (error) {
+                    console.error("Error publishing:", error);
+                  }
+                });
+              }
+            });
+          } else {
+            // Publisher already exists
+            console.log("Publisher already created");
+          }
+
+          // Attach event listeners for the publisher
+          attachPublisherEventListeners();
+        }
+      });
+
+      // // Attach event listeners for the publisher
+      function attachPublisherEventListeners() {
+        if (publisher) {
+          publisher.on({
+            accessAllowed: function (event) {
+              console.log("Publisher access allowed");
+              if (
+                event.accessDialog &&
+                event.accessDialog.source === "screen"
+              ) {
+                console.log("Screen sharing started");
+              }
+            },
+            accessDenied: function (event) {
+              console.log("Publisher access denied");
+              if (
+                event.accessDialog &&
+                event.accessDialog.source === "screen"
+              ) {
+                console.log("Screen sharing denied");
+              }
+            },
+            accessDialogOpened: function (event) {
+              console.log("Publisher access dialog opened");
+            },
+            accessDialogClosed: function (event) {
+              console.log("Publisher access dialog closed");
+            },
+            accessDialogDenied: function (event) {
+              console.log("Publisher access dialog denied");
+            },
+            accessDialogApproved: function (event) {
+              console.log("Publisher access dialog approved");
+            },
+            audioLevelUpdated: function (event) {
+              console.log("Publisher audio level updated");
+            },
+            audioNetworkStats: function (event) {
+              console.log("Publisher audio network stats available");
+            },
+            audioPublishingStarted: function (event) {
+              console.log("Publisher audio publishing started");
+            },
+            audioPublishingStopped: function (event) {
+              console.log("Publisher audio publishing stopped");
+            },
+            audioEnabled: function (event) {
+              console.log("Publisher audio enabled");
+            },
+            audioDisabled: function (event) {
+              console.log("Publisher audio disabled");
+            },
+            streamCreated: function (event) {
+              console.log("Publisher stream created");
+            },
+            streamDestroyed: function (event) {
+              console.log("Publisher stream destroyed");
+            },
+            videoElementCreated: function (event) {
+              console.log("Publisher video element created");
+            },
+            videoElementDestroyed: function (event) {
+              console.log("Publisher video element destroyed");
+            },
+            videoEnabled: function (event) {
+              console.log("Publisher video enabled");
+            },
+            videoDisabled: function (event) {
+              console.log("Publisher video disabled");
+            },
+            videoDisableWarning: function (event) {
+              console.log("Publisher video disable warning");
+            },
+            videoDisableWarningLifted: function (event) {
+              console.log("Publisher video disable warning lifted");
+            },
+            videoDimensionsChanged: function (event) {
+              console.log("Publisher video dimensions changed");
+            },
+            audioBlocked: function (event) {
+              console.log("Publisher audio blocked");
+            },
+            audioUnblocked: function (event) {
+              console.log("Publisher audio unblocked");
+            },
+            videoBlocked: function (event) {
+              console.log("Publisher video blocked");
+            },
+            videoUnblocked: function (event) {
+              console.log("Publisher video unblocked");
+            },
+            videoSourceChanged: function (event) {
+              console.log("Publisher video source changed");
+              // Handle the video source change
+            },
+            audioSourceChanged: function (event) {
+              console.log("Publisher audio source changed");
+              // Handle the audio source change
+            },
+          });
+        }
+      }
+
+      // Attach event listeners for the subscriber
+      function attachSubscriberEventListeners(subscriber, subscriberId) {
+        subscriber.on({
+          videoElementCreated: function (event) {
+            console.log(`Subscriber ${subscriberId} video element created`);
+          },
+          videoElementDestroyed: function (event) {
+            console.log(`Subscriber ${subscriberId} video element destroyed`);
+          },
+          videoEnabled: function (event) {
+            console.log(`Subscriber ${subscriberId} video enabled`);
+          },
+          videoDisabled: function (event) {
+            console.log(`Subscriber ${subscriberId} video disabled`);
+          },
+          videoTypeChanged: function (event) {
+            console.log(
+              `Subscriber ${subscriberId} video type changed to ${event.videoType}`
+            );
+            if (event.videoType === "screen") {
+              console.log(`Subscriber ${subscriberId} started screen sharing`);
+            } else {
+              console.log(`Subscriber ${subscriberId} stopped screen sharing`);
+            }
+          },
+          audioEnabled: function (event) {
+            console.log(`Subscriber ${subscriberId} audio enabled`);
+          },
+          audioDisabled: function (event) {
+            console.log(`Subscriber ${subscriberId} audio disabled`);
+          },
+          connected: function (event) {
+            console.log(`Subscriber ${subscriberId} connected`);
+          },
+          disconnected: function (event) {
+            console.log(`Subscriber ${subscriberId} disconnected`);
+          },
+          destroyed: function (event) {
+            console.log(`Subscriber ${subscriberId} destroyed`);
+          },
+          error: function (event) {
+            console.error(`Subscriber ${subscriberId} error:`, event.error);
+          },
+          audioBlocked: function (event) {
+            console.log(`Subscriber ${subscriberId} audio blocked`);
+          },
+          audioUnblocked: function (event) {
+            console.log(`Subscriber ${subscriberId} audio unblocked`);
+          },
+          videoBlocked: function (event) {
+            console.log(`Subscriber ${subscriberId} video blocked`);
+          },
+          videoUnblocked: function (event) {
+            console.log(`Subscriber ${subscriberId} video unblocked`);
+          },
+          videoSourceChanged: function (event) {
+            console.log(`Subscriber ${subscriberId} video source changed`);
+            // Handle the video source change
+          },
+          audioSourceChanged: function (event) {
+            console.log(`Subscriber ${subscriberId} audio source changed`);
+            // Handle the audio source change
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

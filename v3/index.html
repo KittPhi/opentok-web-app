@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vonage Video API Web App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      #publisher {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #000;
+      }
+
+      #subscribers {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .subscriber-container {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #000;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vonage Video API Web App</h1>
+    <div id="publisher"></div>
+    <div id="subscribers"></div>
+
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

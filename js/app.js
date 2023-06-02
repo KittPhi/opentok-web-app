@@ -63,9 +63,9 @@ session.on("streamCreated", (event) => {
   );
 
   // WASN'T DISPLAYING CORRECTLY, THIS FIXED IT
-  var publisherContainer = document.getElementById("sub-video");
-  publisherContainer.style.width = "400px";
-  publisherContainer.style.height = "400px";
+  // var publisherContainer = document.getElementById("sub-video");
+  // publisherContainer.style.width = "400px";
+  // publisherContainer.style.height = "400px";
 
   if (subscriber && subscriber.videoElement) {
     try {
